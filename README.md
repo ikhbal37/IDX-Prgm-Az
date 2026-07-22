@@ -13,11 +13,9 @@ Lalu buka alamat yang muncul, biasanya `http://localhost:8501`.
 
 ## Memperbarui hasil screener
 
-```bash
-python screener.py
-```
-
-Perintah tersebut memperbarui `hasil_screener.csv`. Refresh halaman dashboard setelah proses selesai.
+Di halaman **Daily Screener**, tekan tombol **Refresh data screener**. Server
+akan mengambil harga terbaru dan menghitung ulang ranking; tidak perlu
+menjalankan `python screener.py` atau mengunggah CSV secara manual.
 
 ## Deploy sebagai web publik
 
@@ -29,5 +27,6 @@ Perintah tersebut memperbarui `hasil_screener.csv`. Refresh halaman dashboard se
 ## Batasan penting
 
 - Halaman publik berarti file `hasil_screener.csv` dan kode dapat diakses oleh pengunjung repository publik. Jangan simpan API key atau data pribadi di repository.
-- Screener tidak otomatis berjalan setiap hari di Streamlit Community Cloud. Jalankan `python screener.py` di komputer, lalu upload hasil CSV terbaru ke GitHub; atau nanti kita tambahkan penjadwalan dan database.
+- Tombol refresh dijalankan manual oleh pengunjung. Untuk pembaruan otomatis
+  setiap hari, tahap berikutnya adalah menambahkan scheduler/server khusus.
 - Backtest adalah simulasi sederhana dan bukan rekomendasi investasi.

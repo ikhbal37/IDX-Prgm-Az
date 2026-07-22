@@ -3,11 +3,14 @@ import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
 from pathlib import Path
+from threading import Lock
+import screener as screener_engine
 
 st.set_page_config(page_title="IDX Trading Bot", layout="wide")
 
 BASE_DIR = Path(__file__).resolve().parent
 SCREENER_FILE = BASE_DIR / "hasil_screener.csv"
+SCREENER_REFRESH_LOCK = Lock()
 
 st.title("📈 IDX Trading Bot")
 st.caption("Dashboard harga, backtest, dan daily stock screener IDX.")
@@ -249,9 +252,35 @@ except Exception as error:
 with tab3:
     st.subheader("🔎 Daily Stock Screener")
     st.caption(
-        "Ranking kandidat dari file hasil_screener.csv. Price–Volume Flow bukan bukti bandar; "
+        "Tekan tombol untuk mengambil data terbaru dan menghitung ranking. Price–Volume Flow bukan bukti bandar; "
         "Broker dan Foreign Flow hanya dihitung bila data CSV aslinya tersedia."
     )
+
+    refresh_column, status_column = st.columns([1, 3])
+    with refresh_column:
+        refresh_requested = st.button(
+            "🔄 Refresh data screener",
+            type="primary",
+            help="Mengambil harga terbaru lalu menghitung ulang seluruh ranking.",
+        )
+
+    if refresh_requested:
+        if not SCREENER_REFRESH_LOCK.acquire(blocking=False):
+            st.warning("Refresh sedang dijalankan oleh pengguna lain. Tunggu sebentar lalu buka ulang halaman ini.")
+        else:
+            try:
+                with st.spinner("Mengambil data harga dan menghitung ranking. Proses ini dapat memerlukan 1–3 menit..."):
+                    refreshed_data = screener_engine.run_screener()
+                st.cache_data.clear()
+                st.session_state["screener_refreshed_at"] = pd.Timestamp.now()
+                if refreshed_data.empty:
+                    st.warning("Refresh selesai, tetapi belum ada saham yang lolos filter hari ini.")
+                else:
+                    st.success(f"Refresh selesai: {len(refreshed_data)} saham lolos filter.")
+            except Exception as error:
+                st.error(f"Refresh gagal. Hasil terakhir tetap dipertahankan. Detail: {error}")
+            finally:
+                SCREENER_REFRESH_LOCK.release()
 
     try:
         if not SCREENER_FILE.exists():
@@ -260,7 +289,11 @@ with tab3:
         modified_time = SCREENER_FILE.stat().st_mtime
         screener_data = load_screener_data(str(SCREENER_FILE), modified_time)
         updated_at = pd.Timestamp.fromtimestamp(modified_time).strftime("%d %b %Y, %H:%M")
-        st.caption(f"Data screener terakhir diperbarui: {updated_at} (waktu server)")
+        status_column.caption(f"Data terakhir diperbarui: {updated_at} (waktu server)")
+
+        if screener_data.empty:
+            st.warning("Data berhasil diperbarui, tetapi tidak ada saham yang lolos filter saat ini.")
+            st.stop()
 
         st.sidebar.header("Bobot Screener")
 
@@ -401,7 +434,7 @@ with tab3:
     except FileNotFoundError:
         st.error(
             "File hasil_screener.csv belum ditemukan. "
-            "Jalankan `python screener.py` terlebih dahulu."
+            "Tekan tombol **Refresh data screener** di atas."
         )
     except Exception as error:
         st.error(f"Terjadi error saat membaca screener: {error}")

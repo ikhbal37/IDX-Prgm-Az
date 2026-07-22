@@ -140,7 +140,12 @@ def analyze_stock(ticker, broker_data, foreign_data):
     return {"Ticker": ticker.replace(".JK", ""), "Harga Terakhir": round(latest_close, 0), "RSI": round(latest_rsi, 1), "Rel. Volume": round(relative_volume, 2), "Rata2 Nilai Transaksi 20H": round(avg_value_20, 0), "Fundamental": round(get_fundamental_score(ticker), 1), "Teknikal": technical, "Price-Volume Flow": pv_flow, "Broker Flow": broker, "Foreign Flow": foreign, "Status Broker": broker_note, "Status Foreign": foreign_note, "Alasan": ", ".join(reasons) or "Tidak ada sinyal kuat"}, None
 
 
-def main():
+def run_screener():
+    """Jalankan screening dan simpan hasilnya untuk dipakai dashboard web.
+
+    Fungsi ini sengaja dapat dipanggil dari app.py, sehingga pengguna tidak
+    perlu lagi menjalankan file ini secara terpisah di laptop.
+    """
     tickers = load_universe()
     broker_data = _load_flow_file(BROKER_FILE, ["Ticker", "Broker", "BuyValue", "SellValue"])
     foreign_data = _load_flow_file(FOREIGN_FILE, ["Ticker", "ForeignBuyValue", "ForeignSellValue"])
@@ -155,11 +160,20 @@ def main():
             diagnostics.append({"Ticker": ticker.replace(".JK", ""), "Status": "ERROR", "Keterangan": str(error)})
     pd.DataFrame(diagnostics).to_csv(DIAGNOSTICS_FILE, index=False)
     screener = pd.DataFrame(results)
-    if screener.empty: print("Tidak ada saham yang lolos filter."); return
+    if screener.empty:
+        # Tetap buat file supaya dashboard dapat memberi pesan yang jelas.
+        pd.DataFrame().to_csv(RESULT_FILE, index=False)
+        print("Tidak ada saham yang lolos filter.")
+        return screener
     # Default keeps the original 15/35/50 formula; broker and foreign scores are
     # displayed separately until the user assigns them a weight in the dashboard.
     screener["Skor Akhir"] = (screener["Fundamental"]*.15 + screener["Teknikal"]*.35 + screener["Price-Volume Flow"]*.50).round(1)
     screener.sort_values("Skor Akhir", ascending=False).to_csv(RESULT_FILE, index=False)
     print(f"\nSelesai: {len(screener)}/{len(tickers)} saham lolos. Lihat hasil_screener.csv dan universe_diagnostics.csv")
+    return screener
+
+
+def main():
+    run_screener()
 
 if __name__ == "__main__": main()
