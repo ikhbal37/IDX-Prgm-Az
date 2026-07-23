@@ -24,6 +24,22 @@ menjalankan `python screener.py` atau mengunggah CSV secara manual.
 3. Pilih repository tersebut, branch `main`, dan isi **Main file path** dengan `app.py`.
 4. Klik **Deploy**. Setelah selesai, Streamlit memberi URL yang dapat dibuka dari laptop atau HP.
 
+## Mengaktifkan pesan Telegram test
+
+1. Di Streamlit Community Cloud buka aplikasi → **Settings** → **Secrets**.
+2. Tempel konfigurasi berikut dan ganti token dengan token asli dari BotFather:
+
+```toml
+[telegram]
+bot_token = "TOKEN_BOTFATHER"
+chat_id = "5382030486"
+```
+
+3. Simpan lalu reboot aplikasi.
+4. Buka tab **Notifikasi Telegram** dan tekan **Kirim test Telegram**.
+
+Token tidak boleh dimasukkan ke `app.py`, GitHub, atau chat.
+
 ## Batasan penting
 
 - Halaman publik berarti file `hasil_screener.csv` dan kode dapat diakses oleh pengunjung repository publik. Jangan simpan API key atau data pribadi di repository.

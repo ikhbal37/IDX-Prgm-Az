@@ -1,0 +1,69 @@
+Ticker,Harga Terakhir,RSI,Rel. Volume,Rata2 Nilai Transaksi 20H,Fundamental,Teknikal,Price-Volume Flow,Broker Flow,Foreign Flow,Status Broker,Status Foreign,Alasan,Skor Akhir
+ICBP,7075.0,78.3,1.51,20354377326.0,100,75,90,,,Tidak ada broker summary,Tidak ada foreign flow,"breakout high 20 hari, volume 1.5x rata-rata 20 hari, close dekat high, SMA20 di atas SMA50",86.2
+SMRA,332.0,87.8,3.12,4381974290.0,100,50,100,,,Tidak ada broker summary,Tidak ada foreign flow,"breakout high 20 hari, volume 3.1x rata-rata 20 hari, close dekat high",82.5
+AKRA,1485.0,87.9,1.53,18986214775.0,100,50,90,,,Tidak ada broker summary,Tidak ada foreign flow,"volume 1.5x rata-rata 20 hari, close dekat high, SMA20 di atas SMA50",77.5
+ERAA,398.0,90.1,4.24,15803880957.0,100,75,70,,,Tidak ada broker summary,Tidak ada foreign flow,"breakout high 20 hari, volume 4.2x rata-rata 20 hari, SMA20 di atas SMA50",76.2
+MYOR,1795.0,58.1,2.83,10166429300.0,85,75,65,,,Tidak ada broker summary,Tidak ada foreign flow,"volume 2.8x rata-rata 20 hari, SMA20 di atas SMA50",71.5
+TAPG,1630.0,75.5,1.89,18696297100.0,85,75,65,,,Tidak ada broker summary,Tidak ada foreign flow,"breakout high 20 hari, volume 1.9x rata-rata 20 hari, SMA20 di atas SMA50",71.5
+ANTM,3120.0,72.0,1.72,277266447550.0,100,75,55,,,Tidak ada broker summary,Tidak ada foreign flow,"breakout high 20 hari, volume 1.7x rata-rata 20 hari, SMA20 di atas SMA50",68.8
+MDKA,2730.0,68.6,1.75,82901849878.0,65,75,65,,,Tidak ada broker summary,Tidak ada foreign flow,"volume 1.7x rata-rata 20 hari, SMA20 di atas SMA50",68.5
+TINS,3620.0,69.6,1.93,101436932900.0,100,75,45,,,Tidak ada broker summary,Tidak ada foreign flow,"volume 1.9x rata-rata 20 hari, SMA20 di atas SMA50",63.8
+MEDC,1320.0,87.1,1.94,54086181450.0,90,50,65,,,Tidak ada broker summary,Tidak ada foreign flow,"breakout high 20 hari, volume 1.9x rata-rata 20 hari",63.5
+INDF,6900.0,73.9,1.25,38833226039.0,100,50,60,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,62.5
+AMMN,4150.0,73.3,1.53,274094622300.0,75,50,65,,,Tidak ada broker summary,Tidak ada foreign flow,"volume 1.5x rata-rata 20 hari, SMA20 di atas SMA50",61.2
+MBMA,535.0,55.6,1.29,44107789875.0,75,75,45,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,60.0
+PGEO,1030.0,81.6,2.22,18853196025.0,90,50,55,,,Tidak ada broker summary,Tidak ada foreign flow,"volume 2.2x rata-rata 20 hari, SMA20 di atas SMA50",58.5
+MIKA,1730.0,56.5,1.43,10779322300.0,90,75,35,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,57.2
+DEWA,440.0,87.2,1.5,261559352041.0,85,25,70,,,Tidak ada broker summary,Tidak ada foreign flow,volume 1.5x rata-rata 20 hari,56.5
+BUMI,168.0,86.7,1.45,335190478500.0,75,25,70,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,55.0
+BRIS,1900.0,69.1,0.96,25182658975.0,100,50,45,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,55.0
+KPIG,85.0,66.7,1.38,9198145310.0,100,50,45,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,55.0
+TPIA,2280.0,82.7,1.73,824054545075.0,90,25,65,,,Tidak ada broker summary,Tidak ada foreign flow,volume 1.7x rata-rata 20 hari,54.8
+BBCA,6500.0,78.0,0.6,1144092638125.0,90,50,45,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,53.5
+ADRO,2580.0,78.8,1.05,63598467200.0,90,50,45,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,53.5
+MNCN,214.0,62.5,1.73,5255118780.0,85,50,45,,,Tidak ada broker summary,Tidak ada foreign flow,volume 1.7x rata-rata 20 hari,52.8
+UNVR,1705.0,40.7,1.22,26675022050.0,90,25,60,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,52.2
+BRMS,605.0,69.0,1.38,275086795110.0,75,50,45,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,51.2
+BBNI,3610.0,78.2,0.87,177551993650.0,100,25,55,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,51.2
+EXCL,2550.0,61.7,1.73,12010002000.0,75,50,45,,,Tidak ada broker summary,Tidak ada foreign flow,volume 1.7x rata-rata 20 hari,51.2
+TOWR,412.0,85.7,1.08,16513839780.0,100,25,55,,,Tidak ada broker summary,Tidak ada foreign flow,close dekat high,51.2
+ACES,358.0,70.3,0.64,5175090880.0,100,50,35,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,50.0
+ADMR,1550.0,76.6,1.62,28481578275.0,90,25,55,,,Tidak ada broker summary,Tidak ada foreign flow,volume 1.6x rata-rata 20 hari,49.8
+UNTR,25550.0,68.2,0.92,103270035750.0,85,75,20,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,49.0
+SSIA,1755.0,70.2,2.15,30291590737.0,85,25,55,,,Tidak ada broker summary,Tidak ada foreign flow,volume 2.2x rata-rata 20 hari,49.0
+ASII,5150.0,77.7,1.81,251635317100.0,85,25,55,,,Tidak ada broker summary,Tidak ada foreign flow,volume 1.8x rata-rata 20 hari,49.0
+HMSP,720.0,73.1,1.19,8072681200.0,85,50,35,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,47.8
+SRTG,1750.0,80.6,0.88,5996005150.0,85,50,35,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,47.8
+INCO,5000.0,83.7,1.13,52721169500.0,75,25,55,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,47.5
+ISAT,1925.0,58.9,0.75,32135025200.0,100,50,30,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,47.5
+SIDO,376.0,65.0,2.05,5411658790.0,75,25,55,,,Tidak ada broker summary,Tidak ada foreign flow,volume 2.0x rata-rata 20 hari,47.5
+BUKA,112.0,76.9,0.72,17567863735.0,100,25,45,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,46.2
+PANI,6450.0,69.0,1.25,26679116250.0,75,50,35,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,46.2
+ITMG,24275.0,86.0,0.96,26184802625.0,90,50,30,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,46.0
+BSDE,585.0,61.8,1.02,8237358075.0,85,50,30,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,45.2
+GGRM,17300.0,76.1,1.08,17939449169.0,85,50,30,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,45.2
+SMGR,1510.0,64.6,0.7,24473942125.0,85,50,30,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,45.2
+MAPI,1515.0,51.1,0.05,96577250377.0,100,50,25,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,45.0
+BBRI,3020.0,72.6,0.75,759255118600.0,100,25,40,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,43.8
+TLKM,2700.0,71.9,0.98,312721802700.0,100,25,40,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,43.8
+JPFA,2080.0,63.6,0.63,28032270225.0,100,50,20,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,42.5
+LSIP,1340.0,90.9,0.92,8447694588.0,100,50,20,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,42.5
+INDY,2550.0,82.0,1.44,37768076675.0,75,25,45,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,42.5
+JSMR,2720.0,52.5,0.76,15944821300.0,85,25,40,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,41.5
+ARTO,1330.0,73.2,0.66,14259294675.0,85,50,20,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,40.2
+HRUM,830.0,82.1,1.42,3888054150.0,90,25,35,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,39.8
+BBYB,262.0,75.5,1.35,6033666770.0,85,25,35,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,39.0
+PTBA,2430.0,80.8,0.89,24792102100.0,85,25,35,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,39.0
+BMRI,4420.0,74.1,0.59,647403706500.0,100,25,30,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,38.8
+WIFI,2050.0,76.5,1.01,37921391933.0,100,25,30,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,38.8
+BBTN,1260.0,77.4,0.95,26531081925.0,100,25,30,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,38.8
+SCMA,208.0,60.0,0.77,7473865935.0,100,50,10,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,37.5
+PGAS,1535.0,77.4,1.34,55592554475.0,75,25,35,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,37.5
+INKP,7875.0,72.8,1.01,28759151335.0,90,25,30,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,37.2
+KLBF,730.0,45.5,1.1,55973895375.0,100,15,30,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,35.2
+CTRA,580.0,67.9,0.8,9762741315.0,85,50,10,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,35.2
+INTP,4620.0,72.7,0.56,6014911300.0,85,50,10,,,Tidak ada broker summary,Tidak ada foreign flow,SMA20 di atas SMA50,35.2
+AALI,6475.0,91.7,0.67,6715550375.0,100,25,20,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,33.8
+PWON,270.0,72.7,0.74,10446480670.0,100,25,20,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,33.8
+BDMN,4170.0,78.9,0.78,4871993100.0,100,25,10,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,28.8
+MTEL,454.0,40.9,0.78,23260632510.0,100,0,20,,,Tidak ada broker summary,Tidak ada foreign flow,Tidak ada sinyal kuat,25.0

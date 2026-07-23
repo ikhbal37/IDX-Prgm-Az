@@ -4,6 +4,11 @@ import yfinance as yf
 import plotly.graph_objects as go
 from pathlib import Path
 from threading import Lock
+from datetime import datetime
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+import json
 import screener as screener_engine
 
 st.set_page_config(page_title="IDX Trading Bot", layout="wide")
@@ -143,12 +148,48 @@ def calculate_liquidity_table(close, volume, selected_date, window_days):
     return pd.DataFrame(rows).sort_values("Rata-rata nilai transaksi", ascending=False)
 
 
+def get_telegram_config():
+    """Ambil konfigurasi Telegram dari Streamlit secrets, bukan dari kode."""
+    try:
+        telegram = st.secrets.get("telegram", {})
+    except FileNotFoundError:
+        telegram = {}
+
+    token = str(telegram.get("bot_token", "")).strip()
+    chat_id = str(telegram.get("chat_id", "")).strip()
+    return token, chat_id
+
+
+def send_telegram_message(token, chat_id, message):
+    """Kirim satu pesan melalui Telegram Bot API dan kembalikan statusnya."""
+    payload = urlencode({"chat_id": chat_id, "text": message}).encode("utf-8")
+    request = Request(
+        f"https://api.telegram.org/bot{token}/sendMessage",
+        data=payload,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        method="POST",
+    )
+    try:
+        with urlopen(request, timeout=15) as response:
+            result = json.loads(response.read().decode("utf-8"))
+        if result.get("ok"):
+            return True, "Pesan test berhasil dikirim ke Telegram."
+        return False, result.get("description", "Telegram menolak permintaan.")
+    except HTTPError as error:
+        return False, f"Telegram menolak permintaan (HTTP {error.code}). Periksa token dan chat ID."
+    except URLError as error:
+        return False, f"Tidak dapat terhubung ke Telegram: {error.reason}"
+    except Exception as error:
+        return False, f"Gagal mengirim pesan: {error}"
+
+
 # ===== TAB UTAMA =====
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Dashboard Harga",
     "Backtest",
     "Daily Screener",
     "Likuiditas Saham",
+    "Notifikasi Telegram",
 ])
 
 # ===== AMBIL DATA HARGA =====
@@ -613,3 +654,45 @@ with tab4:
                     file_name=f"likuiditas_idx_{pd.Timestamp(selected_date).strftime('%Y%m%d')}_{window_days}h.csv",
                     mime="text/csv",
                 )
+
+
+# ===== TAB 5: NOTIFIKASI TELEGRAM =====
+with tab5:
+    st.subheader("🔔 Notifikasi Telegram")
+    st.caption(
+        "Tab ini mengecek koneksi bot terlebih dahulu. Notifikasi sinyal volume 30 menit "
+        "akan ditambahkan setelah koneksi sudah terbukti berhasil."
+    )
+
+    bot_token, telegram_chat_id = get_telegram_config()
+    if bot_token and telegram_chat_id:
+        st.success("Konfigurasi Telegram terdeteksi. Token tidak pernah ditampilkan di dashboard.")
+        st.caption(f"Tujuan alert: chat ID berakhir dengan …{telegram_chat_id[-4:]}")
+
+        if st.button("📨 Kirim test Telegram", type="primary", key="telegram_test"):
+            sent, detail = send_telegram_message(
+                bot_token,
+                telegram_chat_id,
+                "✅ IDX Trading Bot terhubung. Pesan test berhasil dikirim pada "
+                f"{datetime.now().strftime('%d %b %Y %H:%M')}.",
+            )
+            if sent:
+                st.success(detail)
+            else:
+                st.error(detail)
+    else:
+        st.warning("Telegram belum dikonfigurasi.")
+        st.markdown(
+            "Di Streamlit Community Cloud buka **App settings → Secrets**, lalu tempel konfigurasi ini "
+            "dengan token asli dari BotFather:"
+        )
+        st.code(
+            '[telegram]\n'
+            'bot_token = "PASTE_TOKEN_BOTFATHER_DI_SINI"\n'
+            'chat_id = "5382030486"',
+            language="toml",
+        )
+        st.info(
+            "Simpan Secrets, lalu reboot aplikasi. Token harus tetap hanya berada di Secrets—"
+            "jangan dimasukkan ke app.py atau GitHub."
+        )
