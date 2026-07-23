@@ -660,8 +660,8 @@ with tab4:
 with tab5:
     st.subheader("🔔 Notifikasi Telegram")
     st.caption(
-        "Tab ini mengecek koneksi bot terlebih dahulu. Notifikasi sinyal volume 30 menit "
-        "akan ditambahkan setelah koneksi sudah terbukti berhasil."
+        "Pesan test menggunakan Secrets Streamlit. Alert otomatis 30 menit berjalan "
+        "melalui GitHub Actions agar tetap aktif meskipun dashboard ditutup."
     )
 
     bot_token, telegram_chat_id = get_telegram_config()
@@ -695,4 +695,32 @@ with tab5:
         st.info(
             "Simpan Secrets, lalu reboot aplikasi. Token harus tetap hanya berada di Secrets—"
             "jangan dimasukkan ke app.py atau GitHub."
+        )
+
+    st.divider()
+    st.subheader("Aturan alert intraday")
+    st.markdown(
+        """
+        - Candle **30 menit** memiliki volume minimal **3×** rata-rata volume pada slot jam yang sama
+          (menggunakan sampai 20 hari bursa sebelumnya; minimal 10 observasi).
+        - Nilai transaksi candle minimal **Rp1 miliar**.
+        - **Beli kuat:** harga di atas VWAP harian dan close berada di 20% teratas candle.
+        - **Jual kuat:** harga di bawah VWAP harian dan close berada di 20% terbawah candle.
+        - Anti-spam: satu ticker hanya satu alert per arah per hari.
+        """
+    )
+    st.info(
+        "Agar otomatis, masukkan token dan chat ID juga ke GitHub Actions Secrets. "
+        "Streamlit Secrets hanya dipakai untuk tombol test di dashboard."
+    )
+
+    with st.expander("Cara mengaktifkan alert otomatis", expanded=False):
+        st.markdown(
+            """
+            1. Upload file `alert_engine.py`, folder `.github/workflows`, dan pembaruan `app.py` ke repo GitHub aplikasi.
+            2. Di GitHub repo: **Settings → Secrets and variables → Actions → New repository secret**.
+            3. Buat `TELEGRAM_BOT_TOKEN` berisi token BotFather dan `TELEGRAM_CHAT_ID` berisi chat ID kamu.
+            4. Buka tab **Actions** → pilih **IDX intraday Telegram alert** → **Run workflow** untuk test.
+            5. Setelah test sukses, GitHub menjalankannya tiap 30 menit pada jam bursa kerja (WIB).
+            """
         )
