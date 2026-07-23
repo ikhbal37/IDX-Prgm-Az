@@ -87,11 +87,68 @@ def load_screener_data(file_path, modified_time):
     return pd.read_csv(file_path)
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
+def get_liquidity_history(tickers):
+    """Ambil harga dan volume harian untuk menghitung likuiditas historis."""
+    data = yf.download(
+        list(tickers),
+        period="2y",
+        auto_adjust=True,
+        progress=False,
+        group_by="column",
+        threads=True,
+    )
+    if data.empty:
+        return pd.DataFrame(), pd.DataFrame()
+
+    # Hasil yfinance multi-ticker berbentuk kolom bertingkat: harga lalu ticker.
+    if getattr(data.columns, "nlevels", 1) > 1:
+        close = data["Close"].copy()
+        volume = data["Volume"].copy()
+    else:
+        ticker_name = str(tickers[0]).replace(".JK", "")
+        close = data[["Close"]].rename(columns={"Close": ticker_name})
+        volume = data[["Volume"]].rename(columns={"Volume": ticker_name})
+
+    close.columns = [str(column).replace(".JK", "") for column in close.columns]
+    volume.columns = [str(column).replace(".JK", "") for column in volume.columns]
+    return close.dropna(axis=1, how="all"), volume.dropna(axis=1, how="all")
+
+
+def calculate_liquidity_table(close, volume, selected_date, window_days):
+    """Hitung likuiditas hingga tanggal pilihan tanpa memakai data sesudahnya."""
+    end_timestamp = pd.Timestamp(selected_date)
+    close = close.loc[:end_timestamp]
+    volume = volume.loc[:end_timestamp]
+    rows = []
+
+    for stock_ticker in close.columns:
+        prices = close[stock_ticker].dropna().tail(window_days)
+        traded_volume = volume[stock_ticker].reindex(prices.index).fillna(0)
+        if len(prices) < window_days:
+            continue
+
+        transaction_value = prices * traded_volume
+        active_days = int((traded_volume > 0).sum())
+        rows.append({
+            "Ticker": stock_ticker,
+            "Harga pada tanggal pilihan": prices.iloc[-1],
+            "Nilai transaksi hari terakhir": transaction_value.iloc[-1],
+            "Rata-rata nilai transaksi": transaction_value.mean(),
+            "Rata-rata volume": traded_volume.mean(),
+            "Hari aktif": active_days,
+            "Aktivitas perdagangan": active_days / window_days,
+        })
+
+    return pd.DataFrame(rows).sort_values("Rata-rata nilai transaksi", ascending=False)
+
+
 # ===== TAB UTAMA =====
-tab1, tab2, tab3 = st.tabs([
+tab1, tab2, tab3, tab4 = st.tabs([
     "Dashboard Harga",
     "Backtest",
     "Daily Screener",
+    "Likuiditas Saham",
 ])
 
 # ===== AMBIL DATA HARGA =====
@@ -438,3 +495,121 @@ with tab3:
         )
     except Exception as error:
         st.error(f"Terjadi error saat membaca screener: {error}")
+
+
+# ===== TAB 4: LIKUIDITAS SAHAM =====
+with tab4:
+    st.subheader("💧 Dashboard Likuiditas Saham IDX")
+    st.caption(
+        "Likuiditas diukur dari nilai transaksi (harga penutupan × volume), volume, "
+        "dan jumlah hari aktif. Semua angka dihitung hanya sampai tanggal yang kamu pilih."
+    )
+    st.info(
+        "Catatan: data harga harian belum mempunyai jumlah transaksi/order sebenarnya. "
+        "Jadi ‘hari aktif’ berarti hari dengan volume perdagangan, bukan jumlah frekuensi transaksi intraday."
+    )
+
+    period_choice = st.selectbox(
+        "Periode rata-rata",
+        ["1 hari", "1 minggu (5 hari bursa)", "1 bulan (20 hari bursa)"],
+        index=2,
+        key="liquidity_period",
+    )
+    window_map = {
+        "1 hari": 1,
+        "1 minggu (5 hari bursa)": 5,
+        "1 bulan (20 hari bursa)": 20,
+    }
+    window_days = window_map[period_choice]
+
+    minimum_value = st.number_input(
+        "Minimal rata-rata nilai transaksi (Rp)",
+        min_value=0,
+        value=3_000_000_000,
+        step=500_000_000,
+        help="Contoh Rp3 miliar untuk menampilkan saham yang cukup mudah masuk dan keluar.",
+        key="liquidity_minimum_value",
+    )
+
+    liquidity_button = st.button(
+        "🔄 Ambil / refresh data likuiditas",
+        type="primary",
+        key="refresh_liquidity",
+    )
+
+    # Data disimpan di session agar perubahan tanggal/periode tidak mengunduh ulang.
+    if liquidity_button or "liquidity_close" not in st.session_state:
+        try:
+            liquidity_universe = tuple(screener_engine.load_universe())
+            with st.spinner("Mengambil harga dan volume historis saham IDX. Pertama kali dapat memerlukan 1–3 menit..."):
+                close_prices, trading_volumes = get_liquidity_history(liquidity_universe)
+            if close_prices.empty:
+                st.error("Data likuiditas tidak berhasil diambil. Coba tekan tombol refresh lagi.")
+            else:
+                st.session_state["liquidity_close"] = close_prices
+                st.session_state["liquidity_volume"] = trading_volumes
+                st.success(f"Data siap: {len(close_prices.columns)} saham dengan riwayat harga tersedia.")
+        except Exception as error:
+            st.error(f"Gagal mengambil data likuiditas: {error}")
+
+    if "liquidity_close" in st.session_state:
+        close_prices = st.session_state["liquidity_close"]
+        trading_volumes = st.session_state["liquidity_volume"]
+        available_dates = close_prices.dropna(how="all").index
+
+        if len(available_dates) == 0:
+            st.warning("Belum ada tanggal perdagangan yang tersedia.")
+        else:
+            selected_date = st.select_slider(
+                "Tanggal analisis",
+                options=list(available_dates),
+                value=available_dates[-1],
+                format_func=lambda value: pd.Timestamp(value).strftime("%d %b %Y"),
+                key="liquidity_date",
+            )
+            liquidity_table = calculate_liquidity_table(
+                close_prices, trading_volumes, selected_date, window_days
+            )
+            liquid_stocks = liquidity_table[
+                liquidity_table["Rata-rata nilai transaksi"] >= minimum_value
+            ].copy()
+
+            selected_label = pd.Timestamp(selected_date).strftime("%d %b %Y")
+            metric_1, metric_2, metric_3 = st.columns(3)
+            metric_1.metric("Saham yang lolos", len(liquid_stocks))
+            metric_2.metric("Periode", period_choice)
+            metric_3.metric("Tanggal analisis", selected_label)
+
+            if liquid_stocks.empty:
+                st.warning("Tidak ada saham yang lolos batas nilai transaksi pada pilihan ini. Turunkan nilai minimalnya.")
+            else:
+                st.subheader("Daftar saham likuid")
+                display_liquidity = liquid_stocks.copy()
+                display_liquidity["Harga pada tanggal pilihan"] = display_liquidity["Harga pada tanggal pilihan"].map(format_rupiah)
+                display_liquidity["Nilai transaksi hari terakhir"] = display_liquidity["Nilai transaksi hari terakhir"].map(format_rupiah)
+                display_liquidity["Rata-rata nilai transaksi"] = display_liquidity["Rata-rata nilai transaksi"].map(format_rupiah)
+                display_liquidity["Rata-rata volume"] = display_liquidity["Rata-rata volume"].map(lambda value: f"{value:,.0f}")
+                display_liquidity["Aktivitas perdagangan"] = display_liquidity["Aktivitas perdagangan"].map(lambda value: f"{value:.0%}")
+                st.dataframe(display_liquidity, use_container_width=True, hide_index=True)
+
+                top_liquid = liquid_stocks.head(15).sort_values("Rata-rata nilai transaksi")
+                figure = go.Figure(go.Bar(
+                    x=top_liquid["Rata-rata nilai transaksi"] / 1_000_000_000,
+                    y=top_liquid["Ticker"],
+                    orientation="h",
+                    marker_color="#16a085",
+                ))
+                figure.update_layout(
+                    title=f"Top 15 berdasarkan rata-rata nilai transaksi — {period_choice}",
+                    xaxis_title="Rata-rata nilai transaksi (Rp miliar)",
+                    yaxis_title="Ticker",
+                    height=520,
+                )
+                st.plotly_chart(figure, use_container_width=True)
+
+                st.download_button(
+                    "⬇️ Download daftar likuiditas",
+                    data=liquid_stocks.to_csv(index=False).encode("utf-8"),
+                    file_name=f"likuiditas_idx_{pd.Timestamp(selected_date).strftime('%Y%m%d')}_{window_days}h.csv",
+                    mime="text/csv",
+                )
